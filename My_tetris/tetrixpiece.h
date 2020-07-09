@@ -1,10 +1,9 @@
 #ifndef TETRIXPIECE_H
 #define TETRIXPIECE_H
-
+//перечисление фигур
 enum TetrixShape { NoShape, ZShape, SShape, LineShape, TShape, SquareShape,
                    LShape, MirroredLShape };
 
-//! [0]
 class TetrixPiece
 {
 public:
@@ -30,6 +29,5 @@ private:
     TetrixShape pieceShape;
     int coords[4][2];
 };
-//! [0]
 
 #endif

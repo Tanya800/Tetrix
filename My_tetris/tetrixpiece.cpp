@@ -2,16 +2,17 @@
 
 #include <QtCore>
 
-//! [0]
+//информация о фигуре в игровой зоне, ее форма,
+//положение и диапозон позиций
+//выбор рандомной фигуры
 void TetrixPiece::setRandomShape()
 {
     setShape(TetrixShape(QRandomGenerator::global()->bounded(7) + 1));
 }
-//! [0]
 
-//! [1]
+
 void TetrixPiece::setShape(TetrixShape shape)
-{
+{//координаты для каждой фигуры на сетке x(-1;1) & y(-1;2)
     static constexpr int coordsTable[8][4][2] = {
         { { 0, 0 },   { 0, 0 },   { 0, 0 },   { 0, 0 } },
         { { 0, -1 },  { 0, 0 },   { -1, 0 },  { -1, 1 } },
@@ -26,13 +27,13 @@ void TetrixPiece::setShape(TetrixShape shape)
     for (int i = 0; i < 4 ; i++) {
         for (int j = 0; j < 2; ++j)
             coords[i][j] = coordsTable[shape][i][j];
-    }
+    }//устанавливаем координаты в зависимости от вида фигуры (от 0 до 8 фигуры)
     pieceShape = shape;
-//! [1] //! [2]
-}
-//! [2]
 
-//! [3]
+}
+
+
+//минимальные и макс горизонтальные координаты кординаты
 int TetrixPiece::minX() const
 {
     int min = coords[0][0];
@@ -49,9 +50,9 @@ int TetrixPiece::maxX() const
         max = qMax(max, coords[i][0]);
     return max;
 }
-//! [4]
 
-//! [5]
+
+//минимальные и максимальные координаты по вертикали
 int TetrixPiece::minY() const
 {
     int min = coords[0][1];
@@ -61,16 +62,14 @@ int TetrixPiece::minY() const
 }
 
 int TetrixPiece::maxY() const
-//! [5] //! [6]
 {
     int max = coords[0][1];
     for (int i = 1; i < 4; ++i)
         max = qMax(max, coords[i][1]);
     return max;
 }
-//! [6]
 
-//! [7]
+//поворот фигуры
 TetrixPiece TetrixPiece::rotatedLeft() const
 {
     if (pieceShape == SquareShape)
@@ -82,7 +81,6 @@ TetrixPiece TetrixPiece::rotatedLeft() const
         result.setX(i, y(i));
         result.setY(i, -x(i));
     }
-//! [7]
     return result;
 }
 

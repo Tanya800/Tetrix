@@ -14,14 +14,13 @@ TetrixBoard::TetrixBoard(QWidget *parent)
 
     nextPiece.setRandomShape();
 }
-//! [0]
+
 
 //! [1]
 void TetrixBoard::setNextPieceLabel(QLabel *label)
 {
     nextPieceLabel = label;
 }
-//! [1]
 
 //! [2]
 QSize TetrixBoard::sizeHint() const
@@ -31,14 +30,15 @@ QSize TetrixBoard::sizeHint() const
 }
 
 QSize TetrixBoard::minimumSizeHint() const
-//! [2] //! [3]
+//! [2]
 {
     return QSize(BoardWidth * 5 + frameWidth() * 2,
                  BoardHeight * 5 + frameWidth() * 2);
 }
-//! [3]
 
-//! [4]
+
+//функция для старта игры
+//сбрасывает все старые значения
 void TetrixBoard::start()
 {
     if (isPaused)
@@ -57,11 +57,13 @@ void TetrixBoard::start()
     emit levelChanged(level);
 
     newPiece();
+    //Мы запускаем таймер, который определяет,
+    //как часто фигура падает на одну строку на доске.
     timer.start(timeoutTime(), this);
 }
-//! [4]
 
-//! [5]
+
+//
 void TetrixBoard::pause()
 {
     if (!isStarted)
@@ -74,9 +76,10 @@ void TetrixBoard::pause()
         timer.start(timeoutTime(), this);
     }
     update();
-//! [5] //! [6]
+//игра может быть приостановлена только в том случае,
+    //если она уже запущена и еще не приостановлена.
 }
-//! [6]
+
 
 //! [7]
 void TetrixBoard::paintEvent(QPaintEvent *event)
@@ -85,28 +88,27 @@ void TetrixBoard::paintEvent(QPaintEvent *event)
 
     QPainter painter(this);
     QRect rect = contentsRect();
-//! [7]
 
     if (isPaused) {
         painter.drawText(rect, Qt::AlignCenter, tr("Pause"));
         return;
     }
 
-//! [8]
+
     int boardTop = rect.bottom() - BoardHeight*squareHeight();
 
     for (int i = 0; i < BoardHeight; ++i) {
         for (int j = 0; j < BoardWidth; ++j) {
             TetrixShape shape = shapeAt(j, BoardHeight - i - 1);
             if (shape != NoShape)
+                //функция для рисования блока на прямоугольнике
                 drawSquare(painter, rect.left() + j * squareWidth(),
                            boardTop + i * squareHeight(), shape);
         }
-//! [8] //! [9]
-    }
-//! [9]
 
-//! [10]
+    }
+
+//рисование текущей фигуры
     if (curPiece.shape() != NoShape) {
         for (int i = 0; i < 4; ++i) {
             int x = curX + curPiece.x(i);
@@ -115,22 +117,19 @@ void TetrixBoard::paintEvent(QPaintEvent *event)
                        boardTop + (BoardHeight - y - 1) * squareHeight(),
                        curPiece.shape());
         }
-//! [10] //! [11]
     }
-//! [11] //! [12]
 }
-//! [12]
 
-//! [13]
+
+//обработчик нажатия
 void TetrixBoard::keyPressEvent(QKeyEvent *event)
 {
     if (!isStarted || isPaused || curPiece.shape() == NoShape) {
         QFrame::keyPressEvent(event);
         return;
     }
-//! [13]
 
-//! [14]
+//нажатие на клавиши
     switch (event->key()) {
     case Qt::Key_Left:
         tryMove(curPiece, curX - 1, curY);
@@ -153,37 +152,33 @@ void TetrixBoard::keyPressEvent(QKeyEvent *event)
     default:
         QFrame::keyPressEvent(event);
     }
-//! [14]
 }
 
-//! [15]
+//время  истекло??скорость фигур
 void TetrixBoard::timerEvent(QTimerEvent *event)
 {
     if (event->timerId() == timer.timerId()) {
-        if (isWaitingAfterLine) {
+        if (isWaitingAfterLine) {//если строка заполнена
             isWaitingAfterLine = false;
             newPiece();
             timer.start(timeoutTime(), this);
         } else {
-            oneLineDown();
+            oneLineDown();//иначе фигура перемещается вниз
         }
     } else {
         QFrame::timerEvent(event);
-//! [15] //! [16]
     }
-//! [16] //! [17]
 }
-//! [17]
 
-//! [18]
+
+
 void TetrixBoard::clearBoard()
 {
     for (int i = 0; i < BoardHeight * BoardWidth; ++i)
         board[i] = NoShape;
 }
-//! [18]
 
-//! [19]
+//Перемещает текущую фигуру вниз
 void TetrixBoard::dropDown()
 {
     int dropHeight = 0;
@@ -193,30 +188,30 @@ void TetrixBoard::dropDown()
             break;
         --newY;
         ++dropHeight;
-    }
+    }//передаем количество высоты ,чтобы обновитть очки
     pieceDropped(dropHeight);
-//! [19] //! [20]
-}
-//! [20]
 
-//! [21]
+}
+
+
+//вниз на одну строку
 void TetrixBoard::oneLineDown()
 {
     if (!tryMove(curPiece, curX, curY - 1))
-        pieceDropped(0);
+        pieceDropped(0);//игрок не получает очки за падания, если фигура не может упать дальше
 }
-//! [21]
 
-//! [22]
+
+//начисляет очки игроку и создает новую фигуру
 void TetrixBoard::pieceDropped(int dropHeight)
 {
-    for (int i = 0; i < 4; ++i) {
+    for (int i = 0; i < 4; ++i) {//???
         int x = curX + curPiece.x(i);
         int y = curY - curPiece.y(i);
         shapeAt(x, y) = curPiece.shape();
     }
 
-    ++numPiecesDropped;
+    ++numPiecesDropped;//???
     if (numPiecesDropped % 25 == 0) {
         ++level;
         timer.start(timeoutTime(), this);
@@ -227,13 +222,12 @@ void TetrixBoard::pieceDropped(int dropHeight)
     emit scoreChanged(score);
     removeFullLines();
 
-    if (!isWaitingAfterLine)
+    if (!isWaitingAfterLine)//если линия заполнена
         newPiece();
-//! [22] //! [23]
 }
-//! [23]
 
-//! [24]
+
+//сканирует когда фигура была сброшена
 void TetrixBoard::removeFullLines()
 {
     int numFullLines = 0;
@@ -249,21 +243,17 @@ void TetrixBoard::removeFullLines()
         }
 
         if (lineIsFull) {
-//! [24] //! [25]
             ++numFullLines;
             for (int k = i; k < BoardHeight - 1; ++k) {
                 for (int j = 0; j < BoardWidth; ++j)
                     shapeAt(j, k) = shapeAt(j, k + 1);
             }
-//! [25] //! [26]
             for (int j = 0; j < BoardWidth; ++j)
                 shapeAt(j, BoardHeight - 1) = NoShape;
         }
-//! [26] //! [27]
     }
-//! [27]
 
-//! [28]
+//
     if (numFullLines > 0) {
         numLinesRemoved += numFullLines;
         score += 10 * numFullLines;
@@ -275,16 +265,16 @@ void TetrixBoard::removeFullLines()
         curPiece.setShape(NoShape);
         update();
     }
-//! [28] //! [29]
 }
-//! [29]
 
-//! [30]
+
+//новая фигура на поле
 void TetrixBoard::newPiece()
 {
     curPiece = nextPiece;
     nextPiece.setRandomShape();
     showNextPiece();
+    //новая фигура в середине доски в верхней части
     curX = BoardWidth / 2 + 1;
     curY = BoardHeight - 1 + curPiece.minY();
 
@@ -293,11 +283,10 @@ void TetrixBoard::newPiece()
         timer.stop();
         isStarted = false;
     }
-//! [30] //! [31]
 }
-//! [31]
 
-//! [32]
+
+//показ следующей фигуры
 void TetrixBoard::showNextPiece()
 {
     if (!nextPieceLabel)
@@ -317,11 +306,9 @@ void TetrixBoard::showNextPiece()
                    nextPiece.shape());
     }
     nextPieceLabel->setPixmap(pixmap);
-//! [32] //! [33]
 }
-//! [33]
 
-//! [34]
+//определение может ли элемент располагаться в указанных коорднатах
 bool TetrixBoard::tryMove(const TetrixPiece &newPiece, int newX, int newY)
 {
     for (int i = 0; i < 4; ++i) {
@@ -332,18 +319,14 @@ bool TetrixBoard::tryMove(const TetrixPiece &newPiece, int newX, int newY)
         if (shapeAt(x, y) != NoShape)
             return false;
     }
-//! [34]
-
-//! [35]
     curPiece = newPiece;
     curX = newX;
     curY = newY;
     update();
     return true;
 }
-//! [35]
 
-//! [36]
+// рисуем блоки с различными цветами
 void TetrixBoard::drawSquare(QPainter &painter, int x, int y, TetrixShape shape)
 {
     static constexpr QRgb colorTable[8] = {
@@ -365,4 +348,3 @@ void TetrixBoard::drawSquare(QPainter &painter, int x, int y, TetrixShape shape)
     painter.drawLine(x + squareWidth() - 1, y + squareHeight() - 1,
                      x + squareWidth() - 1, y + 1);
 }
-//! [36]
