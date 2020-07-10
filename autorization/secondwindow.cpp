@@ -7,20 +7,20 @@
 #include"QVBoxLayout"
 #include "QLabel"
 #include "QMessageBox"
-
+#include"tetrixwindow.h"
 SecondWindow::SecondWindow(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::SecondWindow)
 {
     ui->setupUi(this);
 
-    startButton = new QPushButton(tr("&Start"));
+    startButton = new QPushButton(tr("&Играть"));
     startButton->setFocusPolicy(Qt::NoFocus);
     startButton->setSizePolicy(QSizePolicy::Expanding  , QSizePolicy::Expanding );
-    quitButton = new QPushButton(tr("&Quit"));
+    quitButton = new QPushButton(tr("&Выход"));
     quitButton->setFocusPolicy(Qt::NoFocus);
     quitButton->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    userButton = new QPushButton(tr("&Account"));
+    userButton = new QPushButton(tr("&Аккаунт"));
     userButton->setFocusPolicy(Qt::NoFocus);
     userButton->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
@@ -30,7 +30,7 @@ SecondWindow::SecondWindow(QWidget *parent) :
     connect(quitButton , &QPushButton::clicked, qApp, &QCoreApplication::quit);
 
     //макет сетки на виджете и его размер
-    setWindowTitle(tr("Tetrix"));
+    setWindowTitle(tr("Тетрис"));
     resize(250, 370);
 
     QVBoxLayout* boxLayout = new QVBoxLayout;
@@ -48,11 +48,6 @@ SecondWindow::~SecondWindow()
     delete ui;
 }
 
-void SecondWindow::on_pushButton_clicked()
-{
-
-
-}
 
 void SecondWindow::setData(const Player &play){
     player = new Player(play);
@@ -60,14 +55,15 @@ void SecondWindow::setData(const Player &play){
 }
 
 void SecondWindow::slotStart(){
-
+    TetrixWindow* window= new TetrixWindow();
+    window->show();
 }
 
 void SecondWindow::slotPlayer(){
 
     QString strMessage = player->getNickname()+ '\n'+
-            + "Count game: " + QString::number(player->getCountGame()) + '\n'
-            + "Score: " + QString::number(player->getScore());
-    QMessageBox::about(this,"Account",strMessage);
+            + "Количество игр: " + QString::number(player->getCountGame()) + '\n'
+            + "Опыт: " + QString::number(player->getScore());
+    QMessageBox::about(this,"Аккаунт",strMessage);
 
 }

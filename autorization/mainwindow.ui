@@ -24,7 +24,7 @@
      </rect>
     </property>
     <property name="title">
-     <string>Autorization</string>
+     <string>Авторизация</string>
     </property>
     <widget class="QWidget" name="verticalLayoutWidget">
      <property name="geometry">
@@ -36,13 +36,6 @@
       </rect>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout">
-      <item>
-       <widget class="QPushButton" name="go_without">
-        <property name="text">
-         <string>Войти без входа</string>
-        </property>
-       </widget>
-      </item>
       <item>
        <widget class="QPushButton" name="sign_in">
         <property name="text">
@@ -72,7 +65,7 @@
       <item>
        <widget class="QLabel" name="label">
         <property name="text">
-         <string>Nickname</string>
+         <string>Имя </string>
         </property>
        </widget>
       </item>
@@ -82,7 +75,7 @@
       <item>
        <widget class="QLabel" name="label_2">
         <property name="text">
-         <string>Password</string>
+         <string>Пароль</string>
         </property>
        </widget>
       </item>
@@ -92,7 +85,7 @@
       <item>
        <widget class="QLabel" name="label_rep_pass">
         <property name="text">
-         <string>Repeat password</string>
+         <string>Повторите пароль</string>
         </property>
        </widget>
       </item>
@@ -109,7 +102,7 @@
      <x>0</x>
      <y>0</y>
      <width>529</width>
-     <height>21</height>
+     <height>22</height>
     </rect>
    </property>
   </widget>

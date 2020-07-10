@@ -22,9 +22,6 @@ public:
     ~SecondWindow();
     void setData(const Player &play);
 
-private slots:
-    void on_pushButton_clicked();
-
 private:
     Ui::SecondWindow *ui;
     QLabel *Info;

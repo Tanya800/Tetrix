@@ -18,8 +18,6 @@ public:
 
 private slots:
 
-    void on_go_without_clicked();
-
     void on_sign_in_clicked();
 
     void on_sign_up_clicked();

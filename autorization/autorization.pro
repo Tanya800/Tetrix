@@ -22,12 +22,18 @@ SOURCES += \
     main.cpp \
     mainwindow.cpp \
     player.cpp \
-    secondwindow.cpp
+    secondwindow.cpp \
+    tetrixboard.cpp \
+    tetrixpiece.cpp \
+    tetrixwindow.cpp
 
 HEADERS += \
     mainwindow.h \
     player.h \
-    secondwindow.h
+    secondwindow.h \
+    tetrixboard.h \
+    tetrixpiece.h \
+    tetrixwindow.h
 
 FORMS += \
     mainwindow.ui \
