@@ -6,6 +6,14 @@
 #include"QTime"
 #include"QVBoxLayout"
 #include"QLabel"
+#include <QDebug>
+#include <QSqlDatabase>
+#include <QSqlQuery>
+#include <QSqlRecord>
+#include <QSqlError>
+#include <QDate>
+#include "qmessagebox"
+#include "qcloseevent"
 MyServer::MyServer(int nPort, QWidget* pwgt /*=0*/) : QWidget(pwgt)
                                                     , m_nNextBlockSize(0)
 {
@@ -26,15 +34,17 @@ MyServer::MyServer(int nPort, QWidget* pwgt /*=0*/) : QWidget(pwgt)
     m_ptxt = new QTextEdit;
     m_ptxt->setReadOnly(true);
 
-    //Layout setup
     QVBoxLayout* pvbxLayout = new QVBoxLayout;
     pvbxLayout->addWidget(new QLabel("<H1>Server</H1>"));
     pvbxLayout->addWidget(m_ptxt);
     setLayout(pvbxLayout);
 }
 
-/*virtual*/ void MyServer::slotNewConnection()
+ void MyServer::slotNewConnection()
 {
+     /*Для подтверждения соединения с клиентом необходимо вызвать
+      *  метод nextPendingConnection(), который возвратит сокет,
+      *  посредством которого можно осуществлять дальнейшую связь с клиентом. */
     QTcpSocket* pClientSocket = m_ptcpServer->nextPendingConnection();
     connect(pClientSocket, SIGNAL(disconnected()),
             pClientSocket, SLOT(deleteLater())
@@ -89,4 +99,11 @@ void MyServer::sendToClient(QTcpSocket* pSocket, const QString& str)
     out << quint16(arrBlock.size() - sizeof(quint16));
 
     pSocket->write(arrBlock);
+}
+
+void MyServer::closeEvent(QCloseEvent* event)
+{
+  int quit = QMessageBox::information(this,
+                  "Realy quit?", "Are you sure?", tr("Yes"), tr("No"));
+  quit == 0 ?  event->accept(): event->ignore();
 }

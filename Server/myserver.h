@@ -15,6 +15,7 @@ private:
     quint16     m_nNextBlockSize;
 
 private:
+    virtual void closeEvent(QCloseEvent *event);
     void sendToClient(QTcpSocket* pSocket, const QString& str);
 
 public:
