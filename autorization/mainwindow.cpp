@@ -36,6 +36,7 @@ void MainWindow::on_sign_in_clicked()
     Player player(nickname,pass,count,score);
     hide();
     window = new SecondWindow(this);
+    window->setData(player);
     window->show();
 }
 

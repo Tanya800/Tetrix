@@ -6,6 +6,7 @@ class Player
 {
 public:
     Player();
+    Player(int, Player);
     Player(QString,QString,int,int);
     void addCountGame();
     void addScore(int);

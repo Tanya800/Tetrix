@@ -1,7 +1,15 @@
 #include "player.h"
 
 Player::Player()
-{}
+{
+
+}
+Player::Player(int a, Player play){
+    Nickname=play.Nickname;
+    Password=play.Password;
+    CountGame=play.CountGame;
+    Score=play.Score;
+}
 
 Player::Player(QString name,QString password,int count,int score ){
     Nickname=name;
